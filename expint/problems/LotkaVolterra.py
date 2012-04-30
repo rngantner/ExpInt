@@ -24,3 +24,12 @@ class LotkaVolterra(DfRHS):
     def name(self):
         return r"Lotka-Volterra Model: $\alpha="+str(self.alpha)+r", \beta="+str(self.beta)+"$"
 
+class LotkaVolterraExample(LotkaVolterra):
+    """
+    Lotka Volterra model with the following coefficients:
+    
+    alpha = 0.01, beta = 0.02
+    """
+    def __init__(self):
+        super(LotkaVolterraExample,self).__init__(0.01,0.02)
+
