@@ -1,4 +1,4 @@
-from expint.methods import ExponentialMethod
+from expint.methods.Method import ExponentialMethod
 from numpy.linalg import solve
 
 class ExpRosenbrockEuler(ExponentialMethod):
