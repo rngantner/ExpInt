@@ -27,7 +27,7 @@ Description of the files in this directory:
    * Implements a helper class for the Exp4 algorithm that manages the Krylov space, provides error estimation and statistics.
     
 * MatrixExponential.py
-   * Nice class structure for describing matrix exponentials; not used in Exp4 due to its high specialization.
+   * Nice class structure for describing matrix exponentials; not used in Exp4 due to its highly specialized requirements.
     
 * Method.py
    * Base class "Method" from which all methods should derive.
