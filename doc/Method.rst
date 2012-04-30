@@ -5,17 +5,17 @@
 Method
 ======
 
-.. autoclass:: Method.Method
+.. autoclass:: expint.methods.Method.Method
   :members:
 
-.. autoclass:: Method.AdaptiveMethod
+.. autoclass:: expint.methods.Method.AdaptiveMethod
 
-.. autoclass:: Method.ExponentialMethod
+.. autoclass:: expint.methods.Method.ExponentialMethod
   :members:
 
 Examples
 ========
 
-.. autoclass:: Method.ExpRosenbrockEuler
+.. autoclass:: expint.methods.ExpRosenbrockEuler.ExpRosenbrockEuler
   :members:
 

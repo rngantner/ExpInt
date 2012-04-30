@@ -12,7 +12,7 @@ DfRHS
 If the Jacobian (or a procedural version describing its application to u) is known, one can use the ``DfRHS`` class.
 It is documented as follows:
 
-.. autoclass:: RHS.DfRHS
+.. autoclass:: expint.RHS.DfRHS
   :members:
 
 Examples
@@ -20,7 +20,7 @@ Examples
 
 The Lotka-Volterra model for modeling predator-prey relationships is implemented as an easy example in the following class. All necessary functions are already implemented in the base class ``DfRHS``.
 
-.. literalinclude:: ../RHS.py
+.. literalinclude:: ../expint/problems/LotkaVolterra.py
    :pyobject: LotkaVolterra
 
 The standard implementation contains the necessary functions for some common cases, for example if the Jacobian can be represented as a numpy.ndarray or a procedural function.
@@ -33,5 +33,5 @@ The application of the Jacobian involves the inverse of a matrix, which is effic
 
 The following function (from the class ``HeatEquation``) contains the implementation of the application of the Jacobian to a vector v:
 
-.. literalinclude:: ../HeatEquation.py
+.. literalinclude:: ../expint/problems/HeatEquation.py
    :pyobject: HeatEquation.ApplyDf
