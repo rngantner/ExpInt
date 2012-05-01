@@ -3,6 +3,16 @@
 ExpInt contains tools to aid in the implementaiton of exponential integrators.
 A few algorithms, including the Exp4 algorithm (Hochbruck, Lubich, Selhofer) are implemented.
 
+## Quickstart
+
+```
+from expint.problems import QuadraticODE
+from expint.methods import Exp4_adaptive
+e4 = Exp4_adaptive(QuadraticODE(1))
+t,y = e4.integrate(x0=1.0, t0=0.0, tend=0.9)
+print "error:",abs(10-y[-1])
+```
+
 ## Files
 Description of the files in this directory:
 
