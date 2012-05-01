@@ -1,6 +1,6 @@
 
 from Method import *
-#from Exp4 import * # TODO: uncomment
+from Exp4 import *
 from ExpForwardEuler import *
 from ExpRosenbrockEuler import *
 from ode45 import *
