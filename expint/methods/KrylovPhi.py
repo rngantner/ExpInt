@@ -144,6 +144,8 @@ class KrylovPhi(object):
         Computes the Krylov subspace with starting vector v.
         sets the following member variables:
         
+        :param v: Starting vector of the Arnoldi iteration.
+        
         ``self.Vm``
             orthonormal basis of Krylov space
         ``self.Hm``
@@ -313,6 +315,7 @@ class KrylovPhi(object):
     
     def phiMat(self,z):
         """
+        :param z: Matrix argument to :math:`\\varphi`
         :returns: :math:`\\varphi(z)`
         """
         from numpy.linalg import solve

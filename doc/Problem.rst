@@ -5,7 +5,7 @@
 Problem
 =======
 
-.. autoclass:: Problem.Problem
+.. autoclass:: expint.Problem.Problem
   :members:
 
 

@@ -14,6 +14,6 @@ This space can then be reused or a new space computed without reallocation of ne
 Additionally, this class contains an error estimation algorithm that determines a stepsize :math:`h` for which the Krylov subspace approximation fulfills certain tolerances.
 This is of central importance to the :ref:`exp4link` algorithm.
 
-.. autoclass:: KrylovPhi.KrylovPhi
+.. autoclass:: expint.methods.KrylovPhi.KrylovPhi
   :members:
 
