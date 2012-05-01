@@ -4,6 +4,10 @@ ExpInt contains tools to aid in the implementaiton of exponential integrators.
 A few algorithms, including the Exp4 algorithm (Hochbruck, Lubich, Selhofer) are implemented.
 
 ## Quickstart
+This is an example of how to call the Exp4_adaptive integrator.
+It uses an included formulation of a quadratic ODE.
+
+Details can be found in `expint.problems.QuadraticODE`.
 
 ```
 from expint.problems import QuadraticODE
@@ -12,6 +16,9 @@ e4 = Exp4_adaptive(QuadraticODE(1))
 t,y = e4.integrate(x0=1.0, t0=0.0, tend=0.9)
 print "error:",abs(10-y[-1])
 ```
+
+## Documentation
+A Sphinx documentation is included; sources are in the `doc/` directory.
 
 ## Files
 Description of the files in this directory:
