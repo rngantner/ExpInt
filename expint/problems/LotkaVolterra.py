@@ -1,3 +1,4 @@
+import numpy as np
 from expint.RHS import DfRHS
 
 class LotkaVolterra(DfRHS):
