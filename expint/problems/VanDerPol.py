@@ -1,4 +1,4 @@
-from expint import RHS
+from expint.RHS import RHS
 
 class Van_der_Pol(RHS):
     """

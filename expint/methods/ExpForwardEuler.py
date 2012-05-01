@@ -1,4 +1,5 @@
-from expint.method import ExponentialMethod
+# -*- encoding: utf-8 -*-
+from expint.methods.Method import ExponentialMethod
 from numpy.linalg import solve
 
 class ExpForwardEuler(ExponentialMethod):

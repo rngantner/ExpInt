@@ -1,4 +1,13 @@
 from expint.RHS import RHS
+from expint.util import gaussNodes
+from numpy import *
+import scipy.sparse as sp
+import scipy.sparse.linalg as sl
+import os
+
+solutionFile = 'HeatEquation_solution.npz'
+#solutionFile = 'HeatEquation_solution2.npz'
+#solutionFile = 'HeatEquation_solution3.npz'
 
 class HeatEquation(RHS):
     """
@@ -32,7 +41,6 @@ class HeatEquation(RHS):
         # shape functions
         shap_LFE = lambda x: (x<0)*(x+1.) + (x>=0)*(1.-x)
         ## quadrature weights and nodes (overkill quadrature!):
-        from gaussNodes import gaussNodes
         self.quad_x,self.quad_w = gaussNodes(1000)
         self.shap = shap_LFE(self.quad_x) # precompute shape functions
         # Load Vector
@@ -45,11 +53,12 @@ class HeatEquation(RHS):
         # store standard initial values
         self.init1 = self.xvals*sin(pi*self.xvals)
         # solution to this initial value for t0=0, tend=1
-        file = open('HeatEquation_solution.npz')
-        #file = open('HeatEquation_solution2.npz')
-        #file = open('HeatEquation_solution3.npz')
-        self.sol1 = load(file)['y']
-        file.close()
+        if os.path.exists(solutionFile):
+            file = open(solutionFile)
+            self.sol1 = load(file)['y']
+            file.close()
+        else:
+            print "precomputed solution could not be imported"
     def normDf(self,x):
         return 6*self.N**(2.5)*norm(x[:-1])
     def ApplyDf(self,u,v):

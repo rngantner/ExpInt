@@ -1,4 +1,4 @@
-from expint.methods import AdaptiveMethod
+from expint.methods.Method import AdaptiveMethod
 
 class ode45(AdaptiveMethod):
     """
