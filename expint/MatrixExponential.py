@@ -162,15 +162,16 @@ class MatrixExponentialFactory(object):
                   'ckrylov': Krylov_Cpp,    # Krylov subspace approximation in C++
                   }
 
-    def createMatrixExponential(matexp):
+    def createMatrixExponential(self,matexp):
         """Returns a new MatrixExponential depending on the parameter
         
         If any modules are missing or not importable, the default method
         is a Padé approximation (class Pade_Python).
         """
+        from types import StringType
         if type(matexp) is StringType:
             # map string to correct matrix exponential
-            matexp_ret = StrToClass[matexp.lower()]
+            matexp_ret = self.StrToClass[matexp.lower()]
         elif issubclass(matexp, MatrixExponential):
             # matexp is a matrix exponential class
             matexp_ret = matexp
