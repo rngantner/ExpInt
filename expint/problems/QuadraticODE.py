@@ -1,6 +1,6 @@
 from expint.RHS import RHS
 
-class QuadraticRHS(RHS):
+class QuadraticODE(RHS):
     """
     RHS of the scalar ODE:
         y' = c * y**2
