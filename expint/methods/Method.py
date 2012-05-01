@@ -2,6 +2,7 @@
 
 import numpy as np
 import inspect
+from expint.MatrixExponential import MatrixExponentialFactory
 
 class Method(object):
     """
@@ -62,17 +63,7 @@ class ExponentialMethod(Method):
         self.setMatrixExponential(matexp)
     
     def setMatrixExponential(self, matexp):
-        from MatrixExponential import StrToClass
-        
-        if type(matexp) is StringType:
-            # map string to correct matrix exponential
-            self.matexp_class = StrToClass[matexp.lower()]
-        elif issubclass(matexp, MatrixExponential):
-            # matexp is a matrix exponential class
-            self.matexp_class = matexp
-        elif isinstance(matexp, MatrixExponential):
-            # matexp is instance of a matrix exponential class
-            self.matexp_class = matexp
+        self.matexp_class = MatrixExponentialFactory().createMatrixExponential(matexp)
     
     def matexp(self,A,v=None,h=1.):
         """
@@ -83,14 +74,13 @@ class ExponentialMethod(Method):
         :returns: exp(h*A)*v is v is given.
         """
         if inspect.isclass(self.matexp_class): # create instance
-            instance = self.matexp_class(A)
+            instance = self.matexp_class()
         else: # already instantiated
             instance = self.matexp_class
-            instance.setA(A)
         if v is None:
-            return instance.compute(h)
+            return instance.compute(A,h)
         else:
-            return instance.apply(v,h)
+            return instance.apply(v,A,h)
 
 
 class ExpForwardEuler(ExponentialMethod):

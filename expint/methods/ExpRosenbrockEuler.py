@@ -1,4 +1,5 @@
 from expint.methods.Method import ExponentialMethod
+import numpy as np
 from numpy.linalg import solve
 
 class ExpRosenbrockEuler(ExponentialMethod):
@@ -40,3 +41,4 @@ class ExpRosenbrockEuler(ExponentialMethod):
             y.append(x)
             t[i+1] = t[i]+h
         return t,np.array(y)
+
