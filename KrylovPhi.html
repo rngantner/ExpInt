@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>KrylovPhi &mdash; ExpInt 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ExpInt 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Exp4" href="Exp4.html" />
+    <link rel="prev" title="Problem" href="Problem.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Exp4.html" title="Exp4"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Problem.html" title="Problem"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ExpInt 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="krylovphi">
+<span id="id1"></span><h1>KrylovPhi<a class="headerlink" href="#krylovphi" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">KrylovPhi</span></tt> module is designed to allow efficient computation of the following function by a Krylov subspace approximation.</p>
+<div class="math">
+<p><img src="_images/math/4daf83ef5671a077f7035eb6970f20151116676a.png" alt="\varphi(z) = z^{-1} (\exp(z)-1)"/></p>
+</div><p>The class <tt class="docutils literal"><span class="pre">KrylovPhi</span></tt> provides a means to efficiently store a Krylov space and access the <img class="math" src="_images/math/8aa4621522bee7aa37c87e4f7ce19929a2bf6c55.png" alt="\varphi(.)"/> function.
+This space can then be reused or a new space computed without reallocation of new memory.
+Additionally, this class contains an error estimation algorithm that determines a stepsize <img class="math" src="_images/math/8189a5b5a0917b8c93350827be4038af1839139d.png" alt="h"/> for which the Krylov subspace approximation fulfills certain tolerances.
+This is of central importance to the <a class="reference internal" href="Exp4.html#exp4link"><em>Exp4</em></a> algorithm.</p>
+<dl class="class">
+<dt id="expint.methods.KrylovPhi.KrylovPhi">
+<em class="property">class </em><tt class="descclassname">expint.methods.KrylovPhi.</tt><tt class="descname">KrylovPhi</tt><big>(</big><em>A</em>, <em>exp4=None</em>, <em>tau=1.0</em>, <em>m=None</em><big>)</big><a class="headerlink" href="#expint.methods.KrylovPhi.KrylovPhi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Krylov subspace approximation of phi(t*A)v
+with phi(z) = (exp(z)-1)/z</p>
+<dl class="docutils">
+<dt>Arguments of constructor:</dt>
+<dd><dl class="first last docutils">
+<dt>A</dt>
+<dd>can be one of the following:
+- matrix represented as an nxn np.ndarray
+- function implementing the linear map <img class="math" src="_images/math/051af0b354ec3c2c902ffffaa9314c24a1bc28cc.png" alt="v \mapsto A\cdot v"/>
+- instance of subclass of RHS. the ApplyDf function is used as the A*v function</dd>
+<dt>exp4  (optional)</dt>
+<dd>an instance of the class <tt class="docutils literal"><span class="pre">Exp4</span></tt>. This enables the use of a scaled
+norm based on the current iterate.</dd>
+<dt>tau (default: 1)</dt>
+<dd>factor in <img class="math" src="_images/math/afb2b99403e8096b57a6800125e36c7cbf478622.png" alt="\varphi(\tau\cdot A)"/></dd>
+<dt>m</dt>
+<dd><dl class="first last docutils">
+<dt>tuple containing the following (in this order)</dt>
+<dd><ul class="first last simple">
+<li>m_min: minimal Krylov space size</li>
+<li>m_max: maximal Krylov space size</li>
+<li>m_opt: optimal Krylov space size (m_min &lt; m_opt &lt; m_max)</li>
+<li>m_suf: sufficient Krylov space size (<em>currently unused</em>)</li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="method">
+<dt id="expint.methods.KrylovPhi.KrylovPhi.compute">
+<tt class="descname">compute</tt><big>(</big><em>v</em><big>)</big><a class="headerlink" href="#expint.methods.KrylovPhi.KrylovPhi.compute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Krylov subspace with starting vector v.
+sets the following member variables:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> &#8211; Starting vector of the Arnoldi iteration.</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">self.Vm</span></tt></dt>
+<dd>orthonormal basis of Krylov space</dd>
+<dt><tt class="docutils literal"><span class="pre">self.Hm</span></tt></dt>
+<dd>Hessenberg matrix</dd>
+<dt><tt class="docutils literal"><span class="pre">self.v_m1</span></tt></dt>
+<dd><img class="math" src="_images/math/dbe43bad7da1c6e24ccf5e7e68c05bb67a4b7d5b.png" alt="v_{m+1}"/></dd>
+<dt><tt class="docutils literal"><span class="pre">self.h_m1</span></tt></dt>
+<dd><img class="math" src="_images/math/7fd1ce095add650b0e80e5a96b31fe704db95ae3.png" alt="h_{m+1,m}"/></dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.KrylovPhi.KrylovPhi.generalizedResidual">
+<tt class="descname">generalizedResidual</tt><big>(</big><big>)</big><a class="headerlink" href="#expint.methods.KrylovPhi.KrylovPhi.generalizedResidual" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">generalized residual as defined in [Hochbruck et al.], Section 6.3</td>
+</tr>
+</tbody>
+</table>
+<p>It is a vector (in direction of <img class="math" src="_images/math/dbe43bad7da1c6e24ccf5e7e68c05bb67a4b7d5b.png" alt="v_{m+1}"/>) of length <tt class="docutils literal"><span class="pre">self.n</span> <span class="pre">=</span> <span class="pre">len(self.v)</span></tt>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.KrylovPhi.KrylovPhi.krylovStep">
+<tt class="descname">krylovStep</tt><big>(</big><big>)</big><a class="headerlink" href="#expint.methods.KrylovPhi.KrylovPhi.krylovStep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes one Krylov step, i.e. increases dimension of Krylov space by 1.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.KrylovPhi.KrylovPhi.phi">
+<tt class="descname">phi</tt><big>(</big><em>f=1</em><big>)</big><a class="headerlink" href="#expint.methods.KrylovPhi.KrylovPhi.phi" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><img class="math" src="_images/math/03c54cf493e3392925035740cde0961d654a6835.png" alt="V_m\cdot\varphi(f\cdot self.H_m)\cdot e_1 \approx \varphi(f\cdot A)\cdot v"/></td>
+</tr>
+</tbody>
+</table>
+<p>f is a factor (eg. phi3 uses 1./3)</p>
+<p>Be sure to call compute(v) first to build the Krylov subspace!</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.KrylovPhi.KrylovPhi.phi3">
+<tt class="descname">phi3</tt><big>(</big><big>)</big><a class="headerlink" href="#expint.methods.KrylovPhi.KrylovPhi.phi3" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">3-tuple of matrices <tt class="docutils literal"><span class="pre">(</span> <span class="pre">phi(t*A),</span> <span class="pre">phi(2*t*A),</span> <span class="pre">phi(3*t*A)</span> <span class="pre">)</span></tt></td>
+</tr>
+</tbody>
+</table>
+<p>Be sure to call compute(v) first to build the Krylov subspace!</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.KrylovPhi.KrylovPhi.phiMat">
+<tt class="descname">phiMat</tt><big>(</big><em>z</em><big>)</big><a class="headerlink" href="#expint.methods.KrylovPhi.KrylovPhi.phiMat" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>z</strong> &#8211; Matrix argument to <img class="math" src="_images/math/921aade3100afbc11d0d13f71cdd7e68d83ad52e.png" alt="\varphi"/></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><img class="math" src="_images/math/e4aeb0a99465e510497b57cc677a0acb90707cea.png" alt="\varphi(z)"/></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.KrylovPhi.KrylovPhi.setA">
+<tt class="descname">setA</tt><big>(</big><em>A</em><big>)</big><a class="headerlink" href="#expint.methods.KrylovPhi.KrylovPhi.setA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks type of A and sets internal variables accordingly</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.KrylovPhi.KrylovPhi.setExp4">
+<tt class="descname">setExp4</tt><big>(</big><em>exp4instance</em><big>)</big><a class="headerlink" href="#expint.methods.KrylovPhi.KrylovPhi.setExp4" title="Permalink to this definition">¶</a></dt>
+<dd><p>set self.Exp4Instance to given argument</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.KrylovPhi.KrylovPhi.stepsize_kry">
+<tt class="descname">stepsize_kry</tt><big>(</big><em>h</em>, <em>verbose=False</em><big>)</big><a class="headerlink" href="#expint.methods.KrylovPhi.KrylovPhi.stepsize_kry" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Compute new Krylov stepsize</dt>
+<dd><ul class="first last simple">
+<li>If the number of steps is in [m_min, m_max], preserve step size.</li>
+<li>If m &gt; m_max, reduces h_kry until error bound holds.</li>
+<li>If m &lt; m_min for at least two consecutive steps, increases h_kry.</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a tuple with boolean (accept=true) and the Krylov step size h_kry.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.KrylovPhi.KrylovPhi.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="headerlink" href="#expint.methods.KrylovPhi.KrylovPhi.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stopping Criterion</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if iteration is converged</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Problem.html"
+                        title="previous chapter">Problem</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Exp4.html"
+                        title="next chapter">Exp4</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/KrylovPhi.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Exp4.html" title="Exp4"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Problem.html" title="Problem"
+             >previous</a> |</li>
+        <li><a href="index.html">ExpInt 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Robert Gantner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

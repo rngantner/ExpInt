@@ -1,0 +1,307 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Exp4 &mdash; ExpInt 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ExpInt 0.1.0 documentation" href="index.html" />
+    <link rel="prev" title="KrylovPhi" href="KrylovPhi.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="KrylovPhi.html" title="KrylovPhi"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ExpInt 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="exp4">
+<span id="exp4link"></span><h1>Exp4<a class="headerlink" href="#exp4" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">Exp4</span></tt> module contains two classes: the basic Exp4 scheme and an adaptive version called <tt class="docutils literal"><span class="pre">Exp4_adaptive</span></tt>.</p>
+<div class="section" id="exp4-exp4">
+<h2>Exp4.Exp4<a class="headerlink" href="#exp4-exp4" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="expint.methods.Exp4">
+<em class="property">class </em><tt class="descclassname">expint.methods.</tt><tt class="descname">Exp4</tt><big>(</big><em>rhs</em>, <em>abstol=1e-06</em>, <em>reltol=1e-06</em>, <em>stats=False</em><big>)</big><a class="headerlink" href="#expint.methods.Exp4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exp4 exponential integration algorithm as described by
+Hochbruck, Lubich and Selhofer (1998)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rhs</strong> &#8211; instance of class implementing RHS interface</li>
+<li><strong>stats</strong> &#8211; True means to keep track of statistics</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Notes:</dt>
+<dd><ul class="first last simple">
+<li>This algorithm is optimized for large, sparse systems.
+Due to the construction of Krylov subspaces, its
+performance is bad for small-dimensional systems.</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="expint.methods.Exp4.integrate">
+<tt class="descname">integrate</tt><big>(</big><em>x0</em>, <em>t0</em>, <em>tend</em>, <em>N=100</em><big>)</big><a class="headerlink" href="#expint.methods.Exp4.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x0</strong> &#8211; initial value</li>
+<li><strong>t0</strong> &#8211; initial time</li>
+<li><strong>tend</strong> &#8211; end time</li>
+<li><strong>N</strong> &#8211; number of timesteps (default: 100)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple <tt class="docutils literal"><span class="pre">(t,y)</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.Exp4.phiv">
+<tt class="descname">phiv</tt><big>(</big><em>h</em>, <em>v</em><big>)</big><a class="headerlink" href="#expint.methods.Exp4.phiv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes phi(h*Hm)*v and two other vectors</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>h</strong> &#8211; factor</li>
+<li><strong>v</strong> &#8211; vector to apply phi(h*Hm) to</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">3-tuple of vectors <tt class="docutils literal"><span class="pre">(</span> <span class="pre">phi(h/3*Hm)*v,</span> <span class="pre">phi(2h/3*Hm)*v,</span> <span class="pre">phi(h*Hm)*v</span> <span class="pre">)</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.Exp4.scaledNorm">
+<tt class="descname">scaledNorm</tt><big>(</big><em>d</em>, <em>abstol=None</em>, <em>reltol=None</em><big>)</big><a class="headerlink" href="#expint.methods.Exp4.scaledNorm" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute scaled norm: <img class="math" src="_images/math/06a67f9ef2b5cad2ed9bc99170f2435a5001c214.png" alt="||d||_{tol} = \sqrt{ \frac1{N} \sum_{i=1}^N (d_i/w_i)^2 }"/></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>abstol</strong> &#8211; absolute tolerance. can be a vector</li>
+<li><strong>reltol</strong> &#8211; relative tolerance. can be a vector</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="exp4-exp4-adaptive">
+<h2>Exp4.Exp4_adaptive<a class="headerlink" href="#exp4-exp4-adaptive" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="expint.methods.Exp4_adaptive">
+<em class="property">class </em><tt class="descclassname">expint.methods.</tt><tt class="descname">Exp4_adaptive</tt><big>(</big><em>rhs</em>, <em>abstol=1e-06</em>, <em>reltol=1e-06</em>, <em>stats=True</em>, <em>krylovargs=None</em><big>)</big><a class="headerlink" href="#expint.methods.Exp4_adaptive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exp4 exponential integration algorithm as described by
+Hochbruck, Lubich and Selhofer (1998)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rhs</strong> &#8211; instance of class implementing RHS interface</li>
+<li><strong>abstol</strong> &#8211; absolute tolerance (default 1e-6)</li>
+<li><strong>reltol</strong> &#8211; relative tolerance</li>
+<li><strong>stats</strong> &#8211; True means to keep track of statistics</li>
+<li><strong>krylovargs</strong> &#8211; arguments given to constructor of <a class="reference internal" href="KrylovPhi.html#krylovphi"><em>KrylovPhi</em></a> class</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Notes:</dt>
+<dd><ul class="first last simple">
+<li>This algorithm is optimized for large, sparse systems.
+Due to the construction of Krylov subspaces, its
+performance is bad for small-dimensional systems.</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="expint.methods.Exp4_adaptive.integrate">
+<tt class="descname">integrate</tt><big>(</big><em>x0</em>, <em>t0</em>, <em>tend</em>, <em>h=None</em>, <em>abstol=None</em>, <em>reltol=None</em><big>)</big><a class="headerlink" href="#expint.methods.Exp4_adaptive.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x0</strong> &#8211; initial value</li>
+<li><strong>t0</strong> &#8211; initial time</li>
+<li><strong>tend</strong> &#8211; end time</li>
+<li><strong>h</strong> &#8211; initial timestep size. If not specified, (tend-t0)/100 will be used.</li>
+<li><strong>abstol</strong> &#8211; absolute tolerance. Overwrites self.abstol</li>
+<li><strong>reltol</strong> &#8211; relative tolerance. Overwrites self.reltol</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple <tt class="docutils literal"><span class="pre">(t,y)</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.Exp4_adaptive.phiv">
+<tt class="descname">phiv</tt><big>(</big><em>h</em>, <em>v</em>, <em>flag=-1</em>, <em>reuse=False</em><big>)</big><a class="headerlink" href="#expint.methods.Exp4_adaptive.phiv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes phi(h*Hm)*v and two other vectors</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>h</strong> &#8211; factor</li>
+<li><strong>v</strong> &#8211; vector to apply phi(h*Hm) to</li>
+<li><strong>flag</strong> &#8211; if it is in (0,1,2), use corresponding instance of <tt class="docutils literal"><span class="pre">PhiKrylov</span></tt></li>
+<li><strong>reuse</strong> &#8211; if True, attempt to reuse the old Krylov space</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">3-tuple of vectors <tt class="docutils literal"><span class="pre">(</span> <span class="pre">phi(h/3*Hm)*v,</span> <span class="pre">phi(2h/3*Hm)*v,</span> <span class="pre">phi(h*Hm)*v</span> <span class="pre">)</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.Exp4_adaptive.stepsize_err">
+<tt class="descname">stepsize_err</tt><big>(</big><em>err</em>, <em>tol</em>, <em>h</em><big>)</big><a class="headerlink" href="#expint.methods.Exp4_adaptive.stepsize_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute stepsize factor needed s.t. timestep tolerances are fulfilled</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>err</strong> &#8211; estimated error of current step</li>
+<li><strong>tol</strong> &#8211; current tolerance</li>
+<li><strong>h</strong> &#8211; current stepsize</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">new stepsize</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Exp4</a><ul>
+<li><a class="reference internal" href="#exp4-exp4">Exp4.Exp4</a></li>
+<li><a class="reference internal" href="#exp4-exp4-adaptive">Exp4.Exp4_adaptive</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="KrylovPhi.html"
+                        title="previous chapter">KrylovPhi</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/Exp4.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="KrylovPhi.html" title="KrylovPhi"
+             >previous</a> |</li>
+        <li><a href="index.html">ExpInt 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Robert Gantner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

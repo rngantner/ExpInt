@@ -1,0 +1,222 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Representations of Right-Hand Sides &mdash; ExpInt 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ExpInt 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Problem" href="Problem.html" />
+    <link rel="prev" title="Method" href="Method.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Problem.html" title="Problem"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Method.html" title="Method"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ExpInt 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="representations-of-right-hand-sides">
+<h1>Representations of Right-Hand Sides<a class="headerlink" href="#representations-of-right-hand-sides" title="Permalink to this headline">¶</a></h1>
+<p>A differential equation can be specified in many different forms, some of them more useful in the context of exponential integrators.
+For example, just specifying the right-hand side <img class="math" src="_images/math/5ccfec49017384f64543b8648a055413c86aef62.png" alt="f(u)"/> is not very useful, as the Jacobian of <img class="math" src="_images/math/bb2c93730dbb48558bb3c4738c956c4e8f816437.png" alt="f"/> is needed in the computation.</p>
+<p>Therefore, there exist a few different classes to represent the right-hand of the ODE <img class="math" src="_images/math/2d168ece028044418819b64d9e1031e4711d6f3b.png" alt="u'=f(u)"/> in different ways.</p>
+<div class="section" id="dfrhs">
+<h2>DfRHS<a class="headerlink" href="#dfrhs" title="Permalink to this headline">¶</a></h2>
+<p>If the Jacobian (or a procedural version describing its application to u) is known, one can use the <tt class="docutils literal"><span class="pre">DfRHS</span></tt> class.
+It is documented as follows:</p>
+<dl class="class">
+<dt id="expint.RHS.DfRHS">
+<em class="property">class </em><tt class="descclassname">expint.RHS.</tt><tt class="descname">DfRHS</tt><big>(</big><em>Df=None</em>, <em>g=None</em>, <em>f=None</em>, <em>normDf=None</em><big>)</big><a class="headerlink" href="#expint.RHS.DfRHS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines a right-hand side of the form:</p>
+<div class="math">
+<p><img src="_images/math/ff145e9096f40af7abb76b03de97cce1cdbf0ab2.png" alt="y' = Df(y,t)\cdot y + g(y,t) ,"/></p>
+</div><p>where Df is the Jacobian of the right hand side <img class="math" src="_images/math/ce6ec14abee0bfd6ba2e87c956dfcc6921f1c0c6.png" alt="f=Df\cdot y + g"/>
+and g(y,t) is the remaining nonlinear term.</p>
+<p>If f is given instead of g, g is defined as <img class="math" src="_images/math/66cd5158619cfa47ba92ab09c0d61de8306961e2.png" alt="f-Df\cdot y"/></p>
+<p>If a numpy array is given for Df instead of a function, it is
+interpreted as a constant Jacobian and the application of Df to y becomes <tt class="docutils literal"><span class="pre">dot(Df,y)</span></tt></p>
+<p>Examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">DfRHS</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">t</span><span class="p">:</span> <span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">Df</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">t</span><span class="p">:</span> <span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">DfRHS</span><span class="p">(</span><span class="n">Df</span><span class="o">=</span><span class="n">array</span><span class="p">(((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))),</span> <span class="n">g</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">t</span><span class="p">:</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="expint.RHS.DfRHS.ApplyDf">
+<tt class="descname">ApplyDf</tt><big>(</big><em>x</em>, <em>v</em><big>)</big><a class="headerlink" href="#expint.RHS.DfRHS.ApplyDf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns Jacobian Df at point x applied to v</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.RHS.DfRHS.Applyf">
+<tt class="descname">Applyf</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#expint.RHS.DfRHS.Applyf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the entire right-hand side f = Df*y + g</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.RHS.DfRHS.Applyg">
+<tt class="descname">Applyg</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#expint.RHS.DfRHS.Applyg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the nonlinear term g(x)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.RHS.DfRHS.getDf">
+<tt class="descname">getDf</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#expint.RHS.DfRHS.getDf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns Jacobian Df at point x.
+This function is not mandatory.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.RHS.DfRHS.normDf">
+<tt class="descname">normDf</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#expint.RHS.DfRHS.normDf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns norm or approximation of norm of Jacobian Df at x.</p>
+<p>This is used to test if Df is singular. If this is never the case
+(eg. Df is a constant nonsingular matrix), one can just return 1.</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p>The Lotka-Volterra model for modeling predator-prey relationships is implemented as an easy example in the following class. All necessary functions are already implemented in the base class <tt class="docutils literal"><span class="pre">DfRHS</span></tt>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">LotkaVolterra</span><span class="p">(</span><span class="n">DfRHS</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Lotka Volterra (predator-prey) model:</span>
+<span class="sd">    Prey:       x&#39; = x(1 - alpha*y)</span>
+<span class="sd">    Predator:   y&#39; = y(-1 + beta*x)</span>
+<span class="sd">    where &#39; representes a derivative wrt time.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="n">beta</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">))</span>
+        <span class="n">Df</span><span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">v</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">alpha</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]),(</span><span class="n">beta</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">beta</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">)),</span><span class="n">v</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LotkaVolterra</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">Df</span><span class="p">,</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">normDf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+        <span class="c"># Df^T*Df is hermitian 2x2 matrix. [a,b; b,c]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">l1</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span> <span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">a</span><span class="o">+</span><span class="n">c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">c</span><span class="o">-</span><span class="n">b</span><span class="o">*</span><span class="n">b</span><span class="p">))</span> <span class="p">)</span>
+        <span class="n">l2</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span> <span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">a</span><span class="o">+</span><span class="n">c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">c</span><span class="o">-</span><span class="n">b</span><span class="o">*</span><span class="n">b</span><span class="p">))</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span><span class="n">l2</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">r&quot;Lotka-Volterra Model: $\alpha=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span><span class="o">+</span><span class="s">r&quot;, \beta=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span><span class="o">+</span><span class="s">&quot;$&quot;</span>
+</pre></div>
+</div>
+<p>The standard implementation contains the necessary functions for some common cases, for example if the Jacobian can be represented as a numpy.ndarray or a procedural function.
+For these cases, the <tt class="docutils literal"><span class="pre">Df,</span> <span class="pre">g,</span> <span class="pre">f</span></tt> keyword arguments can be used, as shown in the above example.</p>
+<p>For more complicated ODEs, it may make more sense to write a new class that derives from DfRHS.
+An example can be found in the class <tt class="docutils literal"><span class="pre">HeatEquation</span></tt>.
+It represents a high-dimensional (spatial) discretization of the heat equation which is to be solved in time.
+The application of the Jacobian involves the inverse of a matrix, which is efficiently implemented by computing a sparse LU-decomposition (in the constructor) and then applying forward and backward substitution each time it is applied.</p>
+<p>The following function (from the class <tt class="docutils literal"><span class="pre">HeatEquation</span></tt>) contains the implementation of the application of the Jacobian to a vector v:</p>
+<div class="highlight-python"><div class="highlight"><pre>    <span class="k">def</span> <span class="nf">ApplyDf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">M_LUsolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">*</span><span class="n">v</span><span class="p">)</span> <span class="c"># M_LUsolve(...) implementes M^{-1}*(...)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Representations of Right-Hand Sides</a><ul>
+<li><a class="reference internal" href="#dfrhs">DfRHS</a><ul>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Method.html"
+                        title="previous chapter">Method</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Problem.html"
+                        title="next chapter">Problem</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/RHS.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Problem.html" title="Problem"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Method.html" title="Method"
+             >previous</a> |</li>
+        <li><a href="index.html">ExpInt 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Robert Gantner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

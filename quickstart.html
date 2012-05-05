@@ -1,0 +1,150 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Quickstart Guide &mdash; ExpInt 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ExpInt 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Method" href="Method.html" />
+    <link rel="prev" title="Welcome to ExpInt’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Method.html" title="Method"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to ExpInt’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ExpInt 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="quickstart-guide">
+<h1>Quickstart Guide<a class="headerlink" href="#quickstart-guide" title="Permalink to this headline">¶</a></h1>
+<p>This page walks you through a quick example ODE and its solution with the Exp4 algorithm.</p>
+<div class="section" id="right-hand-side">
+<h2>Right-Hand Side<a class="headerlink" href="#right-hand-side" title="Permalink to this headline">¶</a></h2>
+<p>First, the right-hand side must be represented in a form suitable for an exponential integrator.
+We will use the simple example of a scalar quadratic ODE:</p>
+<div class="math">
+<p><img src="_images/math/6675bb54910172647c17fbf1fab4fbeac9240ca3.png" alt="y' = c\cdot y^2 =: f(y), \quad y(0)=1"/></p>
+</div><p>The exact solution is of course <img class="math" src="_images/math/59702dfedc32ad9011dd6775991b7604052c16d0.png" alt="y(t) = \frac{c}{1-t}"/>.</p>
+<p>The Exp4 algorithm needs the Jacobian, which can be readily computed, as it is just the derivative:</p>
+<div class="math">
+<p><img src="_images/math/3f44512d5f0560bc9478398a50a6ac1c0246cccd.png" alt="Df(y) = 2\cdot c\cdot y"/></p>
+</div><p>The nonlinear part, <img class="math" src="_images/math/c87ffb791483f5eb7b7cfe68f44c77bbfdf728dd.png" alt="g(y)"/>, is then just <img class="math" src="_images/math/17865c21b2b5dbf37a5dc716e9532dac468ec291.png" alt="-cy^2"/>, leading to the reformulation:</p>
+<div class="math">
+<p><img src="_images/math/54d3624cfa311fb4b00b8e44c95098489a1e8cd5.png" alt="y' = (2\cdot c\cdot y) \cdot y - cy^2,"/></p>
+</div><p>which of course is the same as the original equation.</p>
+<p>This can now be implemented as follows:</p>
+</div>
+<div class="section" id="calling-the-integrator">
+<h2>Calling the Integrator<a class="headerlink" href="#calling-the-integrator" title="Permalink to this headline">¶</a></h2>
+<p>Now it is time to choose an integrator and solve the problem.
+Since we want to use the adaptive Exp4 integrator, we call it as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">expint.problems.QuadraticODE</span> <span class="kn">import</span> <span class="n">QuadraticRHS</span>
+<span class="kn">from</span> <span class="nn">expint.methods</span> <span class="kn">import</span> <span class="n">Exp4_adaptive</span>
+<span class="n">e4</span> <span class="o">=</span> <span class="n">Exp4_adaptive</span><span class="p">(</span><span class="n">QuadraticRHS</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">t</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">e4</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">x0</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">t0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">tend</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&quot;error:&quot;</span><span class="p">,</span><span class="nb">abs</span><span class="p">(</span><span class="mi">10</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Quickstart Guide</a><ul>
+<li><a class="reference internal" href="#right-hand-side">Right-Hand Side</a></li>
+<li><a class="reference internal" href="#calling-the-integrator">Calling the Integrator</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to ExpInt&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Method.html"
+                        title="next chapter">Method</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/quickstart.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Method.html" title="Method"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to ExpInt’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">ExpInt 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Robert Gantner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

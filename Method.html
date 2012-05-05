@@ -1,0 +1,242 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Method &mdash; ExpInt 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="ExpInt 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Representations of Right-Hand Sides" href="RHS.html" />
+    <link rel="prev" title="Quickstart Guide" href="quickstart.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="RHS.html" title="Representations of Right-Hand Sides"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="quickstart.html" title="Quickstart Guide"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">ExpInt 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="method">
+<span id="id1"></span><h1>Method<a class="headerlink" href="#method" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="expint.methods.Method.Method">
+<em class="property">class </em><tt class="descclassname">expint.methods.Method.</tt><tt class="descname">Method</tt><big>(</big><em>rhs=None</em><big>)</big><a class="headerlink" href="#expint.methods.Method.Method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface for integration schemes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rhs</strong> &#8211; Right-hand side to solve.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="expint.methods.Method.Method.integrate">
+<tt class="descname">integrate</tt><big>(</big><em>x0</em>, <em>t0</em>, <em>tend</em>, <em>N</em><big>)</big><a class="headerlink" href="#expint.methods.Method.Method.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function should implement the time integration for
+t from t0 to tend, given the initial condition x(t0) = x0.
+N is the number of timesteps.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="expint.methods.Method.Method.setRHS">
+<tt class="descname">setRHS</tt><big>(</big><em>rhs</em><big>)</big><a class="headerlink" href="#expint.methods.Method.Method.setRHS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience function to set right-hand side to rhs</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="expint.methods.Method.AdaptiveMethod">
+<em class="property">class </em><tt class="descclassname">expint.methods.Method.</tt><tt class="descname">AdaptiveMethod</tt><big>(</big><em>rhs=None</em><big>)</big><a class="headerlink" href="#expint.methods.Method.AdaptiveMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marker class for adaptive methods.
+Problem class checks if method is derived from this to determine function signature.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="expint.methods.Method.ExponentialMethod">
+<em class="property">class </em><tt class="descclassname">expint.methods.Method.</tt><tt class="descname">ExponentialMethod</tt><big>(</big><em>rhs=None</em>, <em>matexp='cpade'</em><big>)</big><a class="headerlink" href="#expint.methods.Method.ExponentialMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines an integration method that requires a matrix exponential.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rhs</strong> &#8211; instance of a DfRHS (fRHS not sufficient, need Jacobian)</li>
+<li><strong>matexp</strong> &#8211; describes type of matrix exponential to use</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Notes:</dt>
+<dd><ul class="first last simple">
+<li>Certain matrix exponential algorithms require the actual
+matrix. The Df argument of the DfRHS class constructor must
+be a numpy array; a FunctionType will not work!</li>
+<li>If a method requires a specific matrix exponential, it
+should overwrite the <tt class="docutils literal"><span class="pre">__init__</span></tt> function and explicitly set
+the variable <tt class="docutils literal"><span class="pre">self.matexp</span></tt> there.</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="expint.methods.Method.ExponentialMethod.matexp">
+<tt class="descname">matexp</tt><big>(</big><em>A</em>, <em>v=None</em>, <em>h=1.0</em><big>)</big><a class="headerlink" href="#expint.methods.Method.ExponentialMethod.matexp" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>A</strong> &#8211; matrix to take exponential of</li>
+<li><strong>v</strong> &#8211; vector to multiply exp(h*A) with (if given)</li>
+<li><strong>h</strong> &#8211; scaling factor in exp(h*A)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">exp(h*A) if v is not given.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">exp(h*A)*v is v is given.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="expint.methods.ExpRosenbrockEuler.ExpRosenbrockEuler">
+<em class="property">class </em><tt class="descclassname">expint.methods.ExpRosenbrockEuler.</tt><tt class="descname">ExpRosenbrockEuler</tt><big>(</big><em>rhs=None</em>, <em>matexp='cpade'</em><big>)</big><a class="headerlink" href="#expint.methods.ExpRosenbrockEuler.ExpRosenbrockEuler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements the Exponential Rosenbrock-Euler method:</p>
+<div class="math">
+<p><img src="_images/math/7bce48c11d77d4ca75286d5bd0a4bc976f15ae4d.png" alt="u_{n+1} = u_n + h_n \varphi(h_n\cdot J_n)\cdot f(u_n)"/></p>
+</div><dl class="method">
+<dt id="expint.methods.ExpRosenbrockEuler.ExpRosenbrockEuler.integrate">
+<tt class="descname">integrate</tt><big>(</big><em>x0</em>, <em>t0</em>, <em>tend</em>, <em>N=100</em><big>)</big><a class="headerlink" href="#expint.methods.ExpRosenbrockEuler.ExpRosenbrockEuler.integrate" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x0</strong> &#8211; initial value</li>
+<li><strong>t0</strong> &#8211; initial time</li>
+<li><strong>tend</strong> &#8211; end time</li>
+<li><strong>N</strong> &#8211; number of timesteps</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple <tt class="docutils literal"><span class="pre">(t,y)</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Method</a><ul>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="quickstart.html"
+                        title="previous chapter">Quickstart Guide</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="RHS.html"
+                        title="next chapter">Representations of Right-Hand Sides</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/Method.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="RHS.html" title="Representations of Right-Hand Sides"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="quickstart.html" title="Quickstart Guide"
+             >previous</a> |</li>
+        <li><a href="index.html">ExpInt 0.1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Robert Gantner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
