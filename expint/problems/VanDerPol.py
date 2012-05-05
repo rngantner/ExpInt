@@ -1,4 +1,5 @@
 from expint.RHS import RHS
+import numpy as np
 
 class Van_der_Pol(RHS):
     """

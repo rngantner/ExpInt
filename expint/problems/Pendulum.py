@@ -1,4 +1,5 @@
 from expint.RHS import RHS
+import numpy as np
 
 class MathematicalPendulum(RHS):
     """
