@@ -16,4 +16,5 @@
 src/arnoldi
 src/test/results
 doc/_build
+bin/odeexamples
 
