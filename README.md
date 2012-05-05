@@ -1,6 +1,6 @@
 # ExpInt
 
-ExpInt contains tools to aid in the implementaiton of exponential integrators.
+ExpInt contains tools to aid in the implementation of exponential integrators.
 A few algorithms, including the Exp4 algorithm (Hochbruck, Lubich, Selhofer) are implemented.
 
 ## Quickstart
