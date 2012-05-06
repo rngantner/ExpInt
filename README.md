@@ -18,7 +18,7 @@ print "error:",abs(10-y[-1])
 ```
 
 ## Documentation
-A Sphinx documentation is included; sources are in the `doc/` directory.
+A Sphinx documentation can be found at http://rngantner.github.com/ExpInt . Sources are in the `doc/` directory.
 
 ## Files
 Description of the files in this directory:
